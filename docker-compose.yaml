@@ -1,5 +1,6 @@
 services:
   jukebot:
+    image: ghcr.io/rneopets/jukebot:latest
     build: .
     volumes:
       - ./:/app
