@@ -56,6 +56,7 @@ jobs:
           key: ${{ secrets.VULTR_SSH_KEY }}
           command_timeout: 15m
           script: |
+            set -e
             cd /opt/bots/jukebot
             git pull
             docker compose pull
