@@ -1,13 +1,13 @@
 import asyncio
 import contextlib
-import ctypes
 import ctypes.util
 import logging
 import os
 import sys
 from collections import defaultdict
+from collections.abc import Generator
 from logging.handlers import RotatingFileHandler
-from typing import Any, DefaultDict, Generator
+from typing import Any
 
 import discord
 from discord.ext import commands
@@ -30,7 +30,7 @@ initial_extensions = [
 
 
 @contextlib.contextmanager
-def setup_logging() -> Generator[None, None, None]:
+def setup_logging() -> Generator[None]:
     try:
         # __enter__
         max_bytes = 32 * 1024 * 1024  # 32 MiB
@@ -66,7 +66,7 @@ def setup_logging() -> Generator[None, None, None]:
 
 class Jukebot(commands.Bot):
     initial_extensions: list[str]
-    currently_playing: DefaultDict[int, str]
+    currently_playing: defaultdict[int, str]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
