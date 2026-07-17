@@ -10,11 +10,23 @@ To run this project, you will need to add the following environment variables to
 
 ## Deployment
 
-To deploy this project, run
+Jukebot runs pm2-managed on the Vultr box at `/opt/bots/jukebot`
+(`ecosystem.config.js` runs `docker compose up`).
 
-```bash
-docker compose up
-```
+Pushing a change to `Dockerfile`, `pyproject.toml`, `uv.lock`, or
+`.dockerignore` on `master` triggers
+`.github/workflows/build-deploy.yaml`, which builds and pushes
+`ghcr.io/rneopets/jukebot` to GHCR, then SSHes into the Vultr box and runs
+`git pull && docker compose pull && pm2 restart jukebot`. It can also be
+run manually via `workflow_dispatch`.
+
+Ordinary code-only changes (no Dockerfile/dependency changes) don't need
+the Action at all - the container bind-mounts the repo (`./:/app` in
+`docker-compose.yaml`), so a plain `git pull` + `pm2 restart jukebot` on
+the box picks them up without a rebuild.
+
+Required secrets on the repo: `VULTR_HOST`, `VULTR_SSH_USER`,
+`VULTR_SSH_KEY`.
 
 ## Notes
 
