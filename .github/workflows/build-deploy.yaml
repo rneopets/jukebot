@@ -60,4 +60,4 @@ jobs:
             cd /opt/bots/jukebot
             git pull
             docker compose pull
-            pm2 restart jukebot
+            pm2 restart jukebot > /dev/null
