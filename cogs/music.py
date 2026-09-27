@@ -183,6 +183,18 @@ class Music(commands.Cog):
             )
             return
 
+        assert isinstance(interaction.user, discord.Member)
+        bot_channel = interaction.guild.voice_client.channel  # type: ignore
+        if (
+            interaction.user.voice is None
+            or interaction.user.voice.channel is None
+            or interaction.user.voice.channel.id != bot_channel.id
+        ):
+            await interaction.response.send_message(
+                f"You need to be in <#{bot_channel.id}> to do that.", ephemeral=True
+            )
+            return
+
         await interaction.guild.voice_client.disconnect(force=True)
         await interaction.response.send_message(
             "Stopped playback and left the voice channel. \N{OCTAGONAL SIGN}"
