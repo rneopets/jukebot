@@ -8,6 +8,8 @@ from discord.ext import commands, tasks
 from jukebot import Jukebot
 
 NEO_JUKEBOX = 1077343507343212585
+MOD_VOICE_CHAT = 1134620255155650622
+ALLOWED_VOICE_CHANNELS = (NEO_JUKEBOX, MOD_VOICE_CHAT)
 MUSIC_DIR = Path("./music")
 
 
@@ -177,11 +179,14 @@ class Music(commands.Cog):
             if interaction.user.voice:
                 assert interaction.user.voice.channel is not None
 
-                if interaction.user.voice.channel.id != NEO_JUKEBOX:
-                    await interaction.response.send_message(
-                        f"You are not in the <#{NEO_JUKEBOX}> channel.", ephemeral=True
+                if interaction.user.voice.channel.id not in ALLOWED_VOICE_CHANNELS:
+                    allowed_channels = " or ".join(
+                        f"<#{channel_id}>" for channel_id in ALLOWED_VOICE_CHANNELS
                     )
-                    raise commands.CommandError(f"Author not in <#{NEO_JUKEBOX}>.")
+                    await interaction.response.send_message(
+                        f"You are not in {allowed_channels}.", ephemeral=True
+                    )
+                    raise commands.CommandError("Author not in an allowed voice channel.")
                 await interaction.user.voice.channel.connect()
             else:
                 await interaction.response.send_message(
