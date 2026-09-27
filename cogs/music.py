@@ -170,6 +170,24 @@ class Music(commands.Cog):
         song = random.choice(songs)
         await self.play_song(interaction, song_path=song)
 
+    @discord.app_commands.command(
+        name="stop",
+        description="Stops playback and disconnects the bot from the voice channel",
+    )
+    async def stop_slash(self, interaction: discord.Interaction) -> None:
+        assert interaction.guild is not None
+
+        if interaction.guild.voice_client is None:
+            await interaction.response.send_message(
+                "I'm not connected to a voice channel.", ephemeral=True
+            )
+            return
+
+        await interaction.guild.voice_client.disconnect(force=True)
+        await interaction.response.send_message(
+            "Stopped playback and left the voice channel. \N{OCTAGONAL SIGN}"
+        )
+
     async def ensure_voice(self, interaction: discord.Interaction) -> None:
         assert interaction.guild is not None
 
