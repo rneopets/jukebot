@@ -194,8 +194,20 @@ class Music(commands.Cog):
                     ephemeral=True,
                 )
                 raise commands.CommandError("Author not connected to a voice channel.")
-        elif interaction.guild.voice_client.is_playing():  # type: ignore
-            interaction.guild.voice_client.stop()  # type: ignore
+        else:
+            assert isinstance(interaction.user, discord.Member)
+            bot_channel = interaction.guild.voice_client.channel  # type: ignore
+            if (
+                interaction.user.voice is None
+                or interaction.user.voice.channel is None
+                or interaction.user.voice.channel.id != bot_channel.id
+            ):
+                await interaction.response.send_message(
+                    f"You need to be in <#{bot_channel.id}> to do that.", ephemeral=True
+                )
+                raise commands.CommandError("Author not in the bot's voice channel.")
+            if interaction.guild.voice_client.is_playing():  # type: ignore
+                interaction.guild.voice_client.stop()  # type: ignore
 
 
 async def setup(bot: Jukebot) -> None:
