@@ -20,7 +20,6 @@ discord.opus.load_opus(ctypes.util.find_library("opus"))  # type: ignore
 intents = discord.Intents.none()
 intents.voice_states = True
 intents.guilds = True
-intents.message_content = True
 intents.guild_messages = True
 
 initial_extensions = [
@@ -109,7 +108,7 @@ async def main() -> None:
     with setup_logging():
         bot = Jukebot(
             max_messages=None,
-            command_prefix=commands.when_mentioned_or("$"),
+            command_prefix=commands.when_mentioned,
             intents=intents,
         )
         async with bot:
